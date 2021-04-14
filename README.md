@@ -1,89 +1,43 @@
-# Project Title
+# Seedyfyuba
 
-This project contains the boilerplate that must be used when dealing with Solidity based Smart Contracts developmen projects.
+This project is a smart contract made for the subject Taller de programacion 2 of the FIUBA. The project allows social entepreneurs to create projects that other users funds while enabling the funders to track that the funds actually reach the destination which they intended, there is also a reviewer of the project which ensures that the project is going good and is the one in charge of releasing the funds.
 
-## Getting Started
+## Usage
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+To install the project we recommend that you use NVM and install the node version defined in `.nvmrc`
 
-### Prerequisites
+Once you have that in place, you can install the dependencies with npm through
 
-What things you need to install the software and how to install them
+`npm i`
 
-```bash
-# Install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-# Install proper node version
-nvm use
-```
+### Testing
 
-Create `.env` file (you can base on [`.env.example`](./.env.example))
-### Installing
+To run the tests, after you installed the dependencies, just run
 
-A step by step series of examples that tell you how to get a development env running
+`npm t`
 
-Say what the step will be
+### Linting
 
-```bash
-# Install the dependencies
-npm install
-```
+To run the linter, after you installed the dependencies, just run 
 
-### Generate Types
+`npm run lint`
 
-In order to get contract types you can generate those typings when compiling
+### Coverage
 
-```bash
-npm run compile
-```
+To create a coverage report, after you installed the dependencies, just run 
 
-## Running the tests
+`npm run coverage`
 
-```bash
-npm run test
-```
+### Doc generation
 
-### Testing with Waffle
+To create the smart contract documentation, after you installed the dependencies, just run 
 
-Tests using Waffle are written with Mocha alongside with Chai. 
+`npm run docgen`
 
-Is recommended to use Gherkin as a language to describe the test cases
+This will generate a browsable html file within the `./docs` folder, to view it you can open it with any browser.
 
-```
-describe("Feature: Greeter", () => {
-  describe("Scenario: Should return the new greeting once it's changed", () => {
-    let greeter: Greeter;
-    it("GIVEN a deployed Greeter contract", async () => {
-      const factory = await ethers.getContractFactory("Greeter");
-      greeter = <Greeter>await factory.deploy("Hello, world!");
-      expect(await greeter.greet()).to.equal("Hello, world!");
-    });
-    it("WHEN greeting message changed", async () => {
-      await greeter.setGreeting("Hola, mundo!");
-    });
-    it("THEN greet returns new greeting message", async () => {
-      expect(await greeter.greet()).to.equal("Hola, mundo!");
-    });
-  });
-});
-```
+### More scripts
 
-We are requiring Chai which is an assertions library. These asserting functions are called "matchers", and the ones we're using here actually come from Waffle.
+Other useful scripts can be found using
 
-For more information we suggest reading waffle testing documentation [here](https://hardhat.org/guides/waffle-testing.html#testing).
-
-## Built With
-
-* [Hardhat](https://hardhat.org/) - Task runner
-
-## Contributing
-
-Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/IQAndreas/markdown-licenses) file for details
+`npm run`
