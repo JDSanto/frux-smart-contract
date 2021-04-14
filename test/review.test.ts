@@ -196,9 +196,7 @@ describe(`Seedyfyuba - Reviews`, function () {
     const stagesCost = [10];
     describe(`WHEN the reviewer tries to set a stage that does not exist as completed`, function () {
       it(`THEN th tx reverts`, async function () {
-        const { seedyfyuba, projectId, projectReviewer } = await loadFixture(
-          fixtureFundedProjectBuilder(stagesCost),
-        );
+        const { seedyfyuba, projectId, projectReviewer } = await loadFixture(fixtureFundedProjectBuilder(stagesCost));
         return expect(seedyfyuba.connect(projectReviewer).setCompletedStage(projectId, 1)).to.be.revertedWith(
           "stage out of bounds",
         );
@@ -209,9 +207,7 @@ describe(`Seedyfyuba - Reviews`, function () {
     const stagesCost = [10, 20, 30];
     describe(`WHEN the reviewer tries to set a stage as completed twice`, function () {
       it(`THEN th tx reverts`, async function () {
-        const { seedyfyuba, projectId, projectReviewer } = await loadFixture(
-          fixtureFundedProjectBuilder(stagesCost),
-        );
+        const { seedyfyuba, projectId, projectReviewer } = await loadFixture(fixtureFundedProjectBuilder(stagesCost));
         await seedyfyuba.connect(projectReviewer).setCompletedStage(projectId, 0);
         return expect(seedyfyuba.connect(projectReviewer).setCompletedStage(projectId, 0)).to.be.revertedWith(
           "previous stage",
@@ -223,9 +219,7 @@ describe(`Seedyfyuba - Reviews`, function () {
     const stagesCost = [10, 20, 30];
     describe(`WHEN the reviewer tries to set a stage that has already passed`, function () {
       it(`THEN th tx reverts`, async function () {
-        const { seedyfyuba, projectId, projectReviewer } = await loadFixture(
-          fixtureFundedProjectBuilder(stagesCost),
-        );
+        const { seedyfyuba, projectId, projectReviewer } = await loadFixture(fixtureFundedProjectBuilder(stagesCost));
         await seedyfyuba.connect(projectReviewer).setCompletedStage(projectId, 1);
         return expect(seedyfyuba.connect(projectReviewer).setCompletedStage(projectId, 0)).to.be.revertedWith(
           "previous stage",

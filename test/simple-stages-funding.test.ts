@@ -181,9 +181,7 @@ describe("Seedyfyuba - Simple funding", () => {
     describe(`WHEN a project that is already completely funded tries to be funded`, function () {
       it("THEN the tx reverts", async function () {
         const { seedyfyuba, projectId } = await loadFixture(fixtureFundedProjectBuilder([10]));
-        return expect(seedyfyuba.fund(projectId, { value: 100 })).to.be.revertedWith(
-          "project not in necessary state",
-        );
+        return expect(seedyfyuba.fund(projectId, { value: 100 })).to.be.revertedWith("project not in necessary state");
       });
     });
   });
@@ -192,9 +190,7 @@ describe("Seedyfyuba - Simple funding", () => {
       it("THEN the tx reverts", async function () {
         const { seedyfyuba, projectReviewer, projectId } = await loadFixture(fixtureFundedProjectBuilder([10]));
         await seedyfyuba.connect(projectReviewer).setCompletedStage(projectId, 0);
-        return expect(seedyfyuba.fund(projectId, { value: 100 })).to.be.revertedWith(
-          "project not in necessary state",
-        );
+        return expect(seedyfyuba.fund(projectId, { value: 100 })).to.be.revertedWith("project not in necessary state");
       });
     });
   });

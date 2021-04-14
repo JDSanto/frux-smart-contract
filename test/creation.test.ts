@@ -31,9 +31,7 @@ describe("Seedyfyuba - Creation of project", () => {
       });
 
       it(`THEN the project has the right reviewer`, async function () {
-        return expect((await this.seedyfyuba.projects(this.projectId)).reviewer).to.equal(
-          this.projectReviewer.address,
-        );
+        return expect((await this.seedyfyuba.projects(this.projectId)).reviewer).to.equal(this.projectReviewer.address);
       });
       it(`THEN the project has the right owner`, async function () {
         return expect((await this.seedyfyuba.projects(this.projectId)).owner).to.equal(this.projectOwner.address);
