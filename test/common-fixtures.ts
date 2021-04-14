@@ -1,12 +1,15 @@
-import { ethers } from "hardhat";
-import { Wallet, Transaction, Contract, BigNumberish, BigNumber } from "ethers";
-import { loadFixture, MockProvider } from "ethereum-waffle";
+import { ethers, waffle } from "hardhat";
+import { Wallet, Transaction, BigNumberish, BigNumber } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
+import { MockProvider } from "ethereum-waffle";
+import SocialStarterJSON from "../artifacts/contracts/SocialStarter.sol/SocialStarter.json"
+import { SocialStarter } from "../typechain";
+const { loadFixture, deployContract } = waffle;
 
-export async function fixtureDeployedSocialStarter(): Promise<Contract> {
-  const factory = await ethers.getContractFactory("SocialStarter");
-  const socialStarter = await factory.deploy();
-  return socialStarter;
+export async function fixtureDeployedSocialStarter(): Promise<SocialStarter> {
+  const [ deployer ] = await ethers.getSigners();
+  const socialStarter = <unknown> await deployContract(deployer, SocialStarterJSON);
+  return socialStarter as SocialStarter;
 }
 
 export function fixtureProjectCreatedBuilder(stagesCost: BigNumberish[]) {
@@ -15,7 +18,7 @@ export function fixtureProjectCreatedBuilder(stagesCost: BigNumberish[]) {
     _p: MockProvider,
   ): Promise<{
     projectCreationTx: Transaction;
-    socialStarter: Contract;
+    socialStarter: SocialStarter;
     deployer: SignerWithAddress;
     projectOwner: SignerWithAddress;
     projectReviewer: SignerWithAddress;
@@ -47,19 +50,19 @@ export function fixtureFundedProjectBuilder(stagesCost: BigNumberish[]) {
     _w: Wallet[],
     _p: MockProvider,
   ): Promise<{
-    socialStarter: Contract;
+    socialStarter: SocialStarter;
     deployer: SignerWithAddress;
     projectOwner: SignerWithAddress;
     projectReviewer: SignerWithAddress;
     funder: SignerWithAddress;
     projectId: BigNumberish;
   }> {
-    const totalCost = stagesCost.reduce((acc, curr) => BigNumber.from(acc).add(curr), BigNumber.from(0));
+    const totalCost: BigNumber = stagesCost.reduce((acc: BigNumber, curr) => BigNumber.from(curr).add(acc), BigNumber.from(0));
     const { socialStarter, aFunder, deployer, projectOwner, projectReviewer, projectId } = await loadFixture(
       fixtureProjectCreatedBuilder(stagesCost),
     );
     const socialStarterFunder = socialStarter.connect(aFunder);
-    await socialStarterFunder.fund(projectId, { value: totalCost });
+    await socialStarterFunder.fund(projectId, { value: totalCost.toString() });
     return {
       socialStarter,
       deployer,

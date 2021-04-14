@@ -1,7 +1,10 @@
-import { expect } from "chai";
-import { loadFixture } from "ethereum-waffle";
-import { ethers } from "hardhat";
+import chai from "chai";
+import { waffle, ethers } from "hardhat";
 import { fixtureDeployedSocialStarter, fixtureProjectCreatedBuilder } from "./common-fixtures";
+
+const { loadFixture } = waffle;
+
+const { expect } = chai;
 
 describe("SocialStarter - Creation of project", () => {
   describe("GIVEN a social starter is deployed", () => {

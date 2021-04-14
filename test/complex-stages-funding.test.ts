@@ -1,8 +1,8 @@
 import chai from "chai";
-import { loadFixture, solidity } from "ethereum-waffle";
+import { waffle } from "hardhat";
 import { fixtureProjectCreatedBuilder } from "./common-fixtures";
 
-chai.use(solidity);
+const { loadFixture } = waffle;
 
 const { expect } = chai;
 

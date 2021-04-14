@@ -1,6 +1,10 @@
-import { expect } from "chai";
-import { loadFixture } from "ethereum-waffle";
+import chai from "chai";
+import { waffle } from "hardhat";
 import { fixtureFundedProjectBuilder } from "./common-fixtures";
+
+const { loadFixture } = waffle;
+
+const { expect } = chai;
 
 describe(`Social Starter - Reviews`, function () {
   describe(`GIVEN a project with a single stage was funded`, function () {
