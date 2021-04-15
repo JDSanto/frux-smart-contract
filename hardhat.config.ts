@@ -1,12 +1,14 @@
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-solhint";
 import "@nomiclabs/hardhat-waffle";
-import "@openzeppelin/hardhat-upgrades";
 import { config as dotenvConfig } from "dotenv";
 import "hardhat-contract-sizer";
 import "hardhat-docgen";
 import "hardhat-gas-reporter";
 import "hardhat-preprocessor";
+import "hardhat-deploy";
+import "hardhat-deploy-ethers";
+
 import { removeConsoleLog } from "hardhat-preprocessor";
 import "hardhat-prettier";
 import "hardhat-typechain";
@@ -65,6 +67,9 @@ const createTestnetConfig = (network: keyof typeof chainIds): NetworkUserConfig 
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
+  namedAccounts: {
+    deployer: 0
+  },
   networks: {
     hardhat: {
       accounts: {
