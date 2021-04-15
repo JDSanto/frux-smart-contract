@@ -1,4 +1,4 @@
-# Seedyfyuba
+# Seedifyuba
 
 This project is a smart contract made for the subject Taller de programacion 2 of the FIUBA. The project allows social entepreneurs to create projects that other users funds while enabling the funders to track that the funds actually reach the destination which they intended, there is also a reviewer of the project which ensures that the project is going good and is the one in charge of releasing the funds.
 

@@ -2,14 +2,14 @@ import { ethers, waffle, getNamedAccounts, deployments } from "hardhat";
 import { Wallet, Transaction, BigNumberish, BigNumber } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 import { MockProvider } from "ethereum-waffle";
-import { Seedyfyuba } from "../typechain";
+import { Seedifyuba } from "../typechain";
 const { loadFixture } = waffle;
 
-export async function fixtureDeployedSeedyfyuba(): Promise<Seedyfyuba> {
+export async function fixtureDeployedSeedifyuba(): Promise<Seedifyuba> {
   await deployments.fixture();
   const { deployer } = await getNamedAccounts();
-  const seedyfyuba = <unknown> await ethers.getContract('Seedyfyuba', deployer);
-  return seedyfyuba as Seedyfyuba;
+  const seedifyuba = <unknown> await ethers.getContract('Seedifyuba', deployer);
+  return seedifyuba as Seedifyuba;
 }
 
 export function fixtureProjectCreatedBuilder(stagesCost: BigNumberish[]) {
@@ -18,7 +18,7 @@ export function fixtureProjectCreatedBuilder(stagesCost: BigNumberish[]) {
     _p: MockProvider,
   ): Promise<{
     projectCreationTx: Transaction;
-    seedyfyuba: Seedyfyuba;
+    seedifyuba: Seedifyuba;
     deployer: SignerWithAddress;
     projectOwner: SignerWithAddress;
     projectReviewer: SignerWithAddress;
@@ -27,14 +27,14 @@ export function fixtureProjectCreatedBuilder(stagesCost: BigNumberish[]) {
     projectId: BigNumberish;
   }> {
     const [deployer, projectOwner, projectReviewer, aFunder, anotherFunder] = await ethers.getSigners();
-    const seedyfyuba = await loadFixture(fixtureDeployedSeedyfyuba);
-    const projectId = await seedyfyuba.nextId();
+    const seedifyuba = await loadFixture(fixtureDeployedSeedifyuba);
+    const projectId = await seedifyuba.nextId();
     const projectCreationTx = <Transaction>(
-      await seedyfyuba.createProject(stagesCost, projectOwner.address, projectReviewer.address)
+      await seedifyuba.createProject(stagesCost, projectOwner.address, projectReviewer.address)
     );
     return {
       projectCreationTx,
-      seedyfyuba,
+      seedifyuba,
       deployer,
       projectOwner,
       aFunder,
@@ -50,7 +50,7 @@ export function fixtureFundedProjectBuilder(stagesCost: BigNumberish[]) {
     _w: Wallet[],
     _p: MockProvider,
   ): Promise<{
-    seedyfyuba: Seedyfyuba;
+    seedifyuba: Seedifyuba;
     deployer: SignerWithAddress;
     projectOwner: SignerWithAddress;
     projectReviewer: SignerWithAddress;
@@ -61,13 +61,13 @@ export function fixtureFundedProjectBuilder(stagesCost: BigNumberish[]) {
       (acc: BigNumber, curr) => BigNumber.from(curr).add(acc),
       BigNumber.from(0),
     );
-    const { seedyfyuba, aFunder, deployer, projectOwner, projectReviewer, projectId } = await loadFixture(
+    const { seedifyuba, aFunder, deployer, projectOwner, projectReviewer, projectId } = await loadFixture(
       fixtureProjectCreatedBuilder(stagesCost),
     );
-    const seedyfyubaFunder = seedyfyuba.connect(aFunder);
-    await seedyfyubaFunder.fund(projectId, { value: totalCost.toString() });
+    const seedifyubaFunder = seedifyuba.connect(aFunder);
+    await seedifyubaFunder.fund(projectId, { value: totalCost.toString() });
     return {
-      seedyfyuba,
+      seedifyuba,
       deployer,
       projectOwner,
       projectReviewer,
