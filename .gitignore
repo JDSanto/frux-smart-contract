@@ -12,7 +12,7 @@ node_modules/
 typechain/
 profiles/
 docs/
-
+deployments/
 # files
 *.env
 *.log

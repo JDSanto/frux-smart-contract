@@ -36,6 +36,20 @@ To create the smart contract documentation, after you installed the dependencies
 
 This will generate a browsable html file within the `./docs` folder, to view it you can open it with any browser.
 
+### Deployment
+
+To deploy the smart contracts just run
+
+`npm run deploy-kovan`
+
+`npm run deploy-local`
+
+depending on the network you want to use.
+
+Keep in mind that you have to set the INFURA_API_KEY and MNEMONIC envvars(the .env file can be used for this).
+
+To get the deployed contract address just look in the `deployments/<network>/Seedifyuba.json` file.
+
 ### More scripts
 
 Other useful scripts can be found using
