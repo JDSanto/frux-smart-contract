@@ -81,6 +81,8 @@
     "size-contracts": "hardhat size-contracts",
     "docgen": "hardhat docgen",
     "test": "hardhat test",
-    "deploy-kovan": ""
+    "deploy-kovan": "hardhat deploy --network kovan",
+    "deploy-local": "hardhat deploy --network hardhat"
+
   }
 }
