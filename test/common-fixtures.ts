@@ -8,7 +8,7 @@ const { loadFixture } = waffle;
 export async function fixtureDeployedSeedifyuba(): Promise<Seedifyuba> {
   await deployments.fixture();
   const { deployer } = await getNamedAccounts();
-  const seedifyuba = <unknown> await ethers.getContract('Seedifyuba', deployer);
+  const seedifyuba = <unknown>await ethers.getContract("Seedifyuba", deployer);
   return seedifyuba as Seedifyuba;
 }
 

@@ -68,7 +68,7 @@ const createTestnetConfig = (network: keyof typeof chainIds): NetworkUserConfig 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   namedAccounts: {
-    deployer: 0
+    deployer: 0,
   },
   networks: {
     hardhat: {
