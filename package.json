@@ -1,7 +1,7 @@
 {
-  "name": "seedyfyuba",
+  "name": "seedifyuba",
   "version": "1.0.0",
-  "description": "Seedyfyuba es un proyecto hecho con fines educativos donde los usuarios pueden crear proyectos que son fundeados por inversores angeles(con inversiones tipo seed o semillas) y cada proyecto tiene asignado un revisor que es el encargado de revisar que el mismo avance. NO USAR EN PRODUCCION!",
+  "description": "Seedifyuba es un proyecto hecho con fines educativos donde los usuarios pueden crear proyectos que son fundeados por inversores angeles(con inversiones tipo seed o semillas) y cada proyecto tiene asignado un revisor que es el encargado de revisar que el mismo avance. NO USAR EN PRODUCCION!",
   "author": "",
   "license": "ISC",
   "dependencies": {

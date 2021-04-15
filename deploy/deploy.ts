@@ -7,7 +7,7 @@ const deployFunc: DeployFunction = async(hre: HardhatRuntimeEnvironment) => {
     const { deployer } = await getNamedAccounts();
     const { deploy } = deployments;
 
-    await deploy('Seedyfyuba', {
+    await deploy('Seedifyuba', {
       from: deployer,
       gasLimit: 4000000,
       args: [],
@@ -16,4 +16,4 @@ const deployFunc: DeployFunction = async(hre: HardhatRuntimeEnvironment) => {
   };
 export default deployFunc;
 
-deployFunc.id = 'deploy_seedyfyuba'; // id required to prevent reexecution
+deployFunc.id = 'deploy_seedifyuba'; // id required to prevent reexecution

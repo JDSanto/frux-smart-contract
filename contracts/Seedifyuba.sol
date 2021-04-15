@@ -7,13 +7,13 @@ import "@openzeppelin/contracts/math/Math.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
 /**
-    @title Seedyfyuba Contract
+    @title Seedifyuba Contract
     @author Taller de programacion 2 - FIUBA - Ayudantes
     @notice This contract allows you to track social tailored projects
         and release its funds according to the progress made
     @dev This is an academic contract made for didactic purposes. DO NOT USE THIS IN PRODUCTION
  */
-contract Seedyfyuba is Ownable {
+contract Seedifyuba is Ownable {
     using SafeMath for uint256;
 
     /**
