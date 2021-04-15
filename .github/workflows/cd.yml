@@ -24,6 +24,6 @@ jobs:
       - run: npm ci
       - name: Deploy
         env:
-          INFURA_ROPSTEN_NODE: ${{secrets.INFURA_ROPSTEN_NODE}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
           MNEMONIC: ${{secrets.MNEMONIC}}
-        run: npm run deploy-ropsten
+        run: npm run deploy-kovan

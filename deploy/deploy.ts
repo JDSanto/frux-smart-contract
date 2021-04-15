@@ -7,11 +7,12 @@ const deployFunc: DeployFunction = async(hre: HardhatRuntimeEnvironment) => {
     const { deployer } = await getNamedAccounts();
     const { deploy } = deployments;
 
-    await deploy('Seedifyuba', {
+    const deployResult = await deploy('Seedifyuba', {
       from: deployer,
       gasLimit: 4000000,
       args: [],
     });
+    console.log(`Seedifyuba deployed at ${deployResult.address}`);
     return hre.network.live; // prevents re execution on live networks
   };
 export default deployFunc;
