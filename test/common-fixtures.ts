@@ -1,14 +1,14 @@
-import { ethers, waffle } from "hardhat";
+import { ethers, waffle, getNamedAccounts, deployments } from "hardhat";
 import { Wallet, Transaction, BigNumberish, BigNumber } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 import { MockProvider } from "ethereum-waffle";
-import SeedyfyubaJSON from "../artifacts/contracts/Seedyfyuba.sol/Seedyfyuba.json";
 import { Seedyfyuba } from "../typechain";
-const { loadFixture, deployContract } = waffle;
+const { loadFixture } = waffle;
 
 export async function fixtureDeployedSeedyfyuba(): Promise<Seedyfyuba> {
-  const [deployer] = await ethers.getSigners();
-  const seedyfyuba = <unknown>await deployContract(deployer, SeedyfyubaJSON);
+  await deployments.fixture();
+  const { deployer } = await getNamedAccounts();
+  const seedyfyuba = <unknown> await ethers.getContract('Seedyfyuba', deployer);
   return seedyfyuba as Seedyfyuba;
 }
 
