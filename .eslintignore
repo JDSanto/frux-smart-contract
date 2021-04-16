@@ -11,6 +11,7 @@ profiles/
 docs/
 .gitlab/
 .vscode/
+src/
 
 # files
 .solcover.js
