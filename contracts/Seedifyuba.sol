@@ -58,6 +58,14 @@ contract Seedifyuba is Ownable {
     event ProjectCompleted(uint256 indexed projectId);
 
     /**
+        @notice Event emitted when a funder withdraws the funds sent to a project
+        @param projectId Identifier of the project that had its funds withdrawn
+        @param withdrawer Funder that withdraw its funds
+        @param withdrawnFunds Amount of withdrawn funds
+    */
+    event FundsWithdrawn(uint256 indexed projectId, address indexed withdrawer, uint256 withdrawnFunds);
+
+    /**
         @notice  States that a a project can be in:
 
 
@@ -130,6 +138,17 @@ contract Seedifyuba is Ownable {
     */
     modifier projectInState(uint256 projectId, State requiredState) {
         require(projects[projectId].state == requiredState, "project not in necessary state");
+        _;
+    }
+
+    /**
+        @notice Verifies that the project is in the correct state(funding or canceled) to have
+        its funds withdrawn
+        @param projectId Identifier of the project to be checked
+     */
+    modifier canHaveFundsWithdrawn(uint256 projectId) {
+        Project storage project = projects[projectId];
+        require(project.state == State.CANCELED || project.state == State.FUNDING, "project not in necessary state");
         _;
     }
 
@@ -239,6 +258,60 @@ contract Seedifyuba is Ownable {
             msg.sender.transfer(msg.value.sub(amountReceived)); // Return extra funds
             emit ProjectStarted(projectId);
         }
+    }
+
+    /**
+        @notice Withdraws the funds sent by the msg.sender for a given project
+        The project should be canceled or in funding state, otherwise it will revert
+        The user should have sent more or the same amount of funds meant to be withdrawn
+
+        Emits event that the funds were withdrawn
+
+        @param projectId Project that you want to withdraw the funds from
+        @param fundsToWithdraw Amount of funds to withdrawn, should be greater than 0(reverts otherwise)
+     */
+    function withdraw(uint256 projectId, uint256 fundsToWithdraw)
+        public
+        projectExists(projectId)
+        canHaveFundsWithdrawn(projectId)
+    {
+        require(fundsToWithdraw > 0, "amount to withdraw should be greater than 0");
+        require(fundsSent[projectId][msg.sender] >= fundsToWithdraw, "not enough funds");
+
+        _withdrawFunds(projectId, fundsToWithdraw);
+    }
+
+    /**
+        @notice Withdraws ALL of the funds sent by the msg.sender for a given project
+        The project should be canceled or in funding state, otherwise it will revert
+        The user should have sent more or the same amount of funds meant to be withdrawn
+
+        Emits event that the funds were withdrawn
+
+        @param projectId Project that you want to withdraw the funds from
+     */
+    function withdrawAllFunds(uint256 projectId) public projectExists(projectId) canHaveFundsWithdrawn(projectId) {
+        uint256 availableFunds = fundsSent[projectId][msg.sender];
+        require(availableFunds > 0, "no funds to withdraw");
+
+        _withdrawFunds(projectId, availableFunds);
+    }
+
+    /**
+        @notice Withdraws the funds sent by the msg.sender for a given project
+        Does not check anything, it just sends the funds, modifies the project and emits the event
+
+        @param projectId Project that you want to withdraw the funds from
+        @param fundsToWithdraw Amount of funds to withdrawn, assumed to be checked in caller function
+     */
+    function _withdrawFunds(uint256 projectId, uint256 fundsToWithdraw) internal {
+        uint256 availableFunds = fundsSent[projectId][msg.sender];
+        fundsSent[projectId][msg.sender] = availableFunds.sub(fundsToWithdraw);
+        projects[projectId].missingAmount = projects[projectId].missingAmount.add(fundsToWithdraw);
+
+        msg.sender.transfer(fundsToWithdraw);
+
+        emit FundsWithdrawn(projectId, msg.sender, fundsToWithdraw);
     }
 
     /**
