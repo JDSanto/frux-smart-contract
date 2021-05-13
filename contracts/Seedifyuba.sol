@@ -207,7 +207,7 @@ contract Seedifyuba is Ownable {
         uint256 previousStage = project.currentStage;
         project.currentStage = completedStage + 1;
         emit StageCompleted(projectId, completedStage);
-        sendFunds(projectId, previousStage + 1, Math.min(completedStage + 1, project.stagesCost.length - 1));
+        _sendFunds(projectId, previousStage + 1, Math.min(completedStage + 1, project.stagesCost.length - 1));
         if (project.currentStage == project.stagesCost.length) {
             emit ProjectCompleted(projectId);
             project.state = State.COMPLETED;
@@ -248,7 +248,7 @@ contract Seedifyuba is Ownable {
         @param fromStage Inclusive, first stage that the funds are given
         @param toStage Inclusive, last stage that the funds are given
     */
-    function sendFunds(
+    function _sendFunds(
         uint256 projectId,
         uint256 fromStage,
         uint256 toStage
