@@ -1,6 +1,9 @@
 import chai from "chai";
 import { waffle } from "hardhat";
 import { fixtureFundedProjectBuilder } from "./common-fixtures";
+import { ContractTransaction, BigNumberish } from "ethers";
+import { Seedifyuba } from "../typechain";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 
 const { loadFixture } = waffle;
 
@@ -10,176 +13,181 @@ describe(`Seedifyuba - Reviews`, function () {
   describe(`GIVEN a project with a single stage was funded`, function () {
     const stagesCost = [10];
     describe(`WHEN the reviewer marks the only stage as completed`, function () {
+      let seedifyuba: Seedifyuba;
+      let projectOwner: SignerWithAddress;
+      let projectReviewer: SignerWithAddress;
+      let projectId: BigNumberish;
+      let tx: ContractTransaction;
       before(async function () {
-        const { seedifyuba, projectId, projectReviewer, projectOwner } = await loadFixture(
+        ({ seedifyuba, projectId, projectReviewer, projectOwner } = await loadFixture(
           fixtureFundedProjectBuilder(stagesCost),
-        );
-        this.projectId = projectId;
-        this.seedifyuba = seedifyuba;
-        this.projectReviewer = projectReviewer;
-        this.projectOwner = projectOwner;
-        this.tx = await seedifyuba.connect(projectReviewer).setCompletedStage(projectId, 0);
+        ));
+        tx = await seedifyuba.connect(projectReviewer).setCompletedStage(projectId, 0);
       });
       it(`THEN an event that the project stage was completed is emitted`, async function () {
-        return expect(this.tx).to.emit(this.seedifyuba, "StageCompleted").withArgs(this.projectId, 0);
+        return expect(tx).to.emit(seedifyuba, "StageCompleted").withArgs(projectId, 0);
       });
       it(`THEN an event that the project was completed is emitted`, async function () {
-        return expect(this.tx).to.emit(this.seedifyuba, "ProjectCompleted").withArgs(this.projectId);
+        return expect(tx).to.emit(seedifyuba, "ProjectCompleted").withArgs(projectId);
       });
       it(`THEN the balance of the owner stays the same because there is no other stage`, async function () {
-        return expect(this.tx).to.changeEtherBalance(this.projectOwner, 0);
+        return expect(tx).to.changeEtherBalance(projectOwner, 0);
       });
       it(`THEN the balance of the smart contract stays the same`, async function () {
         // Hacky way to be able to use changeEtherBalance
         const seedifyubaAddress = {
-          getAddress: () => this.seedifyuba.address,
-          provider: this.seedifyuba.provider,
+          getAddress: () => seedifyuba.address,
+          provider: seedifyuba.provider,
         };
-        return expect(this.tx).to.changeEtherBalance(seedifyubaAddress, 0);
+        return expect(tx).to.changeEtherBalance(seedifyubaAddress, 0);
       });
       it(`THEN the project is marked as completed`, async function () {
-        return expect((await this.seedifyuba.projects(this.projectId)).state).to.equal(3);
+        return expect((await seedifyuba.projects(projectId)).state).to.equal(3);
       });
     });
   });
   describe(`GIVEN a project with two stages was funded`, function () {
     const stagesCost = [10, 20];
     describe(`WHEN the reviewer marks the first stage as completed`, function () {
+      let seedifyuba: Seedifyuba;
+      let projectOwner: SignerWithAddress;
+      let projectReviewer: SignerWithAddress;
+      let projectId: BigNumberish;
+      let tx: ContractTransaction;
       before(async function () {
-        const { seedifyuba, projectId, projectReviewer, projectOwner } = await loadFixture(
+        ({ seedifyuba, projectId, projectReviewer, projectOwner } = await loadFixture(
           fixtureFundedProjectBuilder(stagesCost),
-        );
-        this.projectId = projectId;
-        this.seedifyuba = seedifyuba;
-        this.projectReviewer = projectReviewer;
-        this.projectOwner = projectOwner;
-        this.tx = await seedifyuba.connect(projectReviewer).setCompletedStage(projectId, 0);
+        ));
+        tx = await seedifyuba.connect(projectReviewer).setCompletedStage(projectId, 0);
       });
       it(`THEN an event that the project stage was completed is emitted`, async function () {
-        return expect(this.tx).to.emit(this.seedifyuba, "StageCompleted").withArgs(this.projectId, 0);
+        return expect(tx).to.emit(seedifyuba, "StageCompleted").withArgs(projectId, 0);
       });
       it(`THEN the owner receives the second stage's funds`, async function () {
-        return expect(this.tx).to.changeEtherBalance(this.projectOwner, stagesCost[1]);
+        return expect(tx).to.changeEtherBalance(projectOwner, stagesCost[1]);
       });
       it(`THEN the current stage of the project is the second`, async function () {
-        return expect((await this.seedifyuba.projects(this.projectId)).currentStage).to.equal(1);
+        return expect((await seedifyuba.projects(projectId)).currentStage).to.equal(1);
       });
       it(`THEN the smart contract sends the funds of the second stage(decreasing its balance)`, async function () {
         // Hacky way to be able to use changeEtherBalance
         const seedifyubaAddress = {
-          getAddress: () => this.seedifyuba.address,
-          provider: this.seedifyuba.provider,
+          getAddress: () => seedifyuba.address,
+          provider: seedifyuba.provider,
         };
-        return expect(this.tx).to.changeEtherBalance(seedifyubaAddress, -stagesCost[1]);
+        return expect(tx).to.changeEtherBalance(seedifyubaAddress, -stagesCost[1]);
       });
       it(`THEN the project is still in progress`, async function () {
-        return expect((await this.seedifyuba.projects(this.projectId)).state).to.equal(2);
+        return expect((await seedifyuba.projects(projectId)).state).to.equal(2);
       });
     });
   });
   describe(`GIVEN a project with two stages was funded AND the first stage was set as completed`, function () {
     const stagesCost = [10, 20];
     describe(`WHEN the reviewer marks the second stage as completed`, function () {
+      let seedifyuba: Seedifyuba;
+      let projectOwner: SignerWithAddress;
+      let projectReviewer: SignerWithAddress;
+      let projectId: BigNumberish;
+      let tx: ContractTransaction;
       before(async function () {
-        const { seedifyuba, projectId, projectReviewer, projectOwner } = await loadFixture(
+        ({ seedifyuba, projectId, projectReviewer, projectOwner } = await loadFixture(
           fixtureFundedProjectBuilder(stagesCost),
-        );
-        this.projectId = projectId;
-        this.seedifyuba = seedifyuba;
-        this.projectReviewer = projectReviewer;
-        this.projectOwner = projectOwner;
+        ));
         await seedifyuba.connect(projectReviewer).setCompletedStage(projectId, 0);
-        this.tx = await seedifyuba.connect(projectReviewer).setCompletedStage(projectId, 1);
+        tx = await seedifyuba.connect(projectReviewer).setCompletedStage(projectId, 1);
       });
       it(`THEN an event that the project stage was completed is emitted`, async function () {
-        return expect(this.tx).to.emit(this.seedifyuba, "StageCompleted").withArgs(this.projectId, 1);
+        return expect(tx).to.emit(seedifyuba, "StageCompleted").withArgs(projectId, 1);
       });
       it(`THEN an event that the project was completed is emitted`, async function () {
-        return expect(this.tx).to.emit(this.seedifyuba, "ProjectCompleted").withArgs(this.projectId);
+        return expect(tx).to.emit(seedifyuba, "ProjectCompleted").withArgs(projectId);
       });
       it(`THEN the balance of the owner stays the same because there is no other stage`, async function () {
-        return expect(this.tx).to.changeEtherBalance(this.projectOwner, 0);
+        return expect(tx).to.changeEtherBalance(projectOwner, 0);
       });
       it(`THEN the balance of the smart contract stays the same`, async function () {
         // Hacky way to be able to use changeEtherBalance
         const seedifyubaAddress = {
-          getAddress: () => this.seedifyuba.address,
-          provider: this.seedifyuba.provider,
+          getAddress: () => seedifyuba.address,
+          provider: seedifyuba.provider,
         };
-        return expect(this.tx).to.changeEtherBalance(seedifyubaAddress, 0);
+        return expect(tx).to.changeEtherBalance(seedifyubaAddress, 0);
       });
       it(`THEN the project is marked as completed`, async function () {
-        return expect((await this.seedifyuba.projects(this.projectId)).state).to.equal(3);
+        return expect((await seedifyuba.projects(projectId)).state).to.equal(3);
       });
     });
   });
   describe(`GIVEN a project with three stages was funded`, function () {
     const stagesCost = [10, 20, 30];
     describe(`WHEN the reviewer marks the second stage as completed`, function () {
+      let seedifyuba: Seedifyuba;
+      let projectOwner: SignerWithAddress;
+      let projectReviewer: SignerWithAddress;
+      let projectId: BigNumberish;
+      let tx: ContractTransaction;
       before(async function () {
-        const { seedifyuba, projectId, projectReviewer, projectOwner } = await loadFixture(
+        ({ seedifyuba, projectId, projectReviewer, projectOwner } = await loadFixture(
           fixtureFundedProjectBuilder(stagesCost),
-        );
-        this.projectId = projectId;
-        this.seedifyuba = seedifyuba;
-        this.projectReviewer = projectReviewer;
-        this.projectOwner = projectOwner;
-        this.tx = await seedifyuba.connect(projectReviewer).setCompletedStage(projectId, 1);
+        ));
+        tx = await seedifyuba.connect(projectReviewer).setCompletedStage(projectId, 1);
       });
       it(`THEN an event that the project stage was completed is emitted`, async function () {
-        return expect(this.tx).to.emit(this.seedifyuba, "StageCompleted").withArgs(this.projectId, 1);
+        return expect(tx).to.emit(seedifyuba, "StageCompleted").withArgs(projectId, 1);
       });
       it(`THEN the owner receives the second stage and the third stage's funds`, async function () {
-        return expect(this.tx).to.changeEtherBalance(this.projectOwner, stagesCost[1] + stagesCost[2]);
+        return expect(tx).to.changeEtherBalance(projectOwner, stagesCost[1] + stagesCost[2]);
       });
       it(`THEN the smart contract sends the funds of the second and third stages(decreasing its balance)`, async function () {
         // Hacky way to be able to use changeEtherBalance
         const seedifyubaAddress = {
-          getAddress: () => this.seedifyuba.address,
-          provider: this.seedifyuba.provider,
+          getAddress: () => seedifyuba.address,
+          provider: seedifyuba.provider,
         };
-        return expect(this.tx).to.changeEtherBalance(seedifyubaAddress, -(stagesCost[1] + stagesCost[2]));
+        return expect(tx).to.changeEtherBalance(seedifyubaAddress, -(stagesCost[1] + stagesCost[2]));
       });
       it(`THEN the project is still in progress`, async function () {
-        return expect((await this.seedifyuba.projects(this.projectId)).state).to.equal(2);
+        return expect((await seedifyuba.projects(projectId)).state).to.equal(2);
       });
       it(`THEN the current stage of the project is the third`, async function () {
-        return expect((await this.seedifyuba.projects(this.projectId)).currentStage).to.equal(2);
+        return expect((await seedifyuba.projects(projectId)).currentStage).to.equal(2);
       });
     });
   });
   describe(`GIVEN a project with two stages was funded`, function () {
     const stagesCost = [10, 20];
     describe(`WHEN the reviewer marks the second stage as completed`, function () {
+      let seedifyuba: Seedifyuba;
+      let projectOwner: SignerWithAddress;
+      let projectReviewer: SignerWithAddress;
+      let projectId: BigNumberish;
+      let tx: ContractTransaction;
       before(async function () {
-        const { seedifyuba, projectId, projectReviewer, projectOwner } = await loadFixture(
+        ({ seedifyuba, projectId, projectReviewer, projectOwner } = await loadFixture(
           fixtureFundedProjectBuilder(stagesCost),
-        );
-        this.projectId = projectId;
-        this.seedifyuba = seedifyuba;
-        this.projectReviewer = projectReviewer;
-        this.projectOwner = projectOwner;
-        this.tx = await seedifyuba.connect(projectReviewer).setCompletedStage(projectId, 1);
+        ));
+        tx = await seedifyuba.connect(projectReviewer).setCompletedStage(projectId, 1);
       });
       it(`THEN an event that the project stage was completed is emitted`, async function () {
-        return expect(this.tx).to.emit(this.seedifyuba, "StageCompleted").withArgs(this.projectId, 1);
+        return expect(tx).to.emit(seedifyuba, "StageCompleted").withArgs(projectId, 1);
       });
       it(`THEN an event that the project was completed is emitted`, async function () {
-        return expect(this.tx).to.emit(this.seedifyuba, "ProjectCompleted").withArgs(this.projectId);
+        return expect(tx).to.emit(seedifyuba, "ProjectCompleted").withArgs(projectId);
       });
       it(`THEN the owner receives the second stage funds`, async function () {
-        return expect(this.tx).to.changeEtherBalance(this.projectOwner, stagesCost[1]);
+        return expect(tx).to.changeEtherBalance(projectOwner, stagesCost[1]);
       });
       it(`THEN the smart contract sends the funds of the second stages(decreasing its balance)`, async function () {
         // Hacky way to be able to use changeEtherBalance
         const seedifyubaAddress = {
-          getAddress: () => this.seedifyuba.address,
-          provider: this.seedifyuba.provider,
+          getAddress: () => seedifyuba.address,
+          provider: seedifyuba.provider,
         };
-        return expect(this.tx).to.changeEtherBalance(seedifyubaAddress, -stagesCost[1]);
+        return expect(tx).to.changeEtherBalance(seedifyubaAddress, -stagesCost[1]);
       });
       it(`THEN the project is marked as completed`, async function () {
-        return expect((await this.seedifyuba.projects(this.projectId)).state).to.equal(3);
+        return expect((await seedifyuba.projects(projectId)).state).to.equal(3);
       });
     });
   });

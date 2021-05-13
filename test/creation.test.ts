@@ -1,6 +1,9 @@
 import chai from "chai";
 import { waffle, ethers } from "hardhat";
 import { fixtureDeployedSeedifyuba, fixtureProjectCreatedBuilder } from "./common-fixtures";
+import { Seedifyuba } from "../typechain";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
+import { BigNumberish, Transaction } from "ethers";
 
 const { loadFixture } = waffle;
 
@@ -10,34 +13,34 @@ describe("Seedifyuba - Creation of project", () => {
   describe("GIVEN a Seedifyuba is deployed", () => {
     const stagesCost = [15];
     describe(`WHEN a project is created with only a stage with a cost of ${stagesCost[0]}`, function () {
+      let projectCreationTx: Transaction;
+      let seedifyuba: Seedifyuba;
+      let projectOwner: SignerWithAddress;
+      let projectReviewer: SignerWithAddress;
+      let projectId: BigNumberish;
       before(async function () {
-        const { projectCreationTx, seedifyuba, projectOwner, projectReviewer, projectId } = await loadFixture(
+        ({ projectCreationTx, seedifyuba, projectOwner, projectReviewer, projectId } = await loadFixture(
           fixtureProjectCreatedBuilder(stagesCost),
-        );
-        this.projectCreationTx = projectCreationTx;
-        this.seedifyuba = seedifyuba;
-        this.projectOwner = projectOwner;
-        this.projectReviewer = projectReviewer;
-        this.projectId = projectId;
+        ));
       });
       it("THEN an event is emited", async function () {
-        return expect(await this.projectCreationTx)
-          .to.emit(this.seedifyuba, "ProjectCreated")
-          .withArgs(this.projectId, this.projectOwner.address, this.projectReviewer.address, stagesCost[0]);
+        return expect(await projectCreationTx)
+          .to.emit(seedifyuba, "ProjectCreated")
+          .withArgs(projectId, projectOwner.address, projectReviewer.address, stagesCost[0]);
       });
 
       it(`THEN the project has a missing amount of ${stagesCost[0]}`, async function () {
-        return expect((await this.seedifyuba.projects(this.projectId)).missingAmount).to.equal(stagesCost[0]);
+        return expect((await seedifyuba.projects(projectId)).missingAmount).to.equal(stagesCost[0]);
       });
 
       it(`THEN the project has the right reviewer`, async function () {
-        return expect((await this.seedifyuba.projects(this.projectId)).reviewer).to.equal(this.projectReviewer.address);
+        return expect((await seedifyuba.projects(projectId)).reviewer).to.equal(projectReviewer.address);
       });
       it(`THEN the project has the right owner`, async function () {
-        return expect((await this.seedifyuba.projects(this.projectId)).owner).to.equal(this.projectOwner.address);
+        return expect((await seedifyuba.projects(projectId)).owner).to.equal(projectOwner.address);
       });
       it(`THEN the project is at the FUNDING state`, async function () {
-        return expect((await this.seedifyuba.projects(this.projectId)).state).to.equal(0);
+        return expect((await seedifyuba.projects(projectId)).state).to.equal(0);
       });
     });
   });
@@ -46,24 +49,24 @@ describe("Seedifyuba - Creation of project", () => {
     const stagesCost = [10, 20, 30000];
     const summedCost = stagesCost.reduce((acc, curr) => acc + curr);
     describe(`WHEN a project is created with three stages`, function () {
+      let projectCreationTx: Transaction;
+      let seedifyuba: Seedifyuba;
+      let projectOwner: SignerWithAddress;
+      let projectReviewer: SignerWithAddress;
+      let projectId: BigNumberish;
       before(async function () {
-        const { projectCreationTx, seedifyuba, projectOwner, projectReviewer, projectId } = await loadFixture(
+        ({ projectCreationTx, seedifyuba, projectOwner, projectReviewer, projectId } = await loadFixture(
           fixtureProjectCreatedBuilder(stagesCost),
-        );
-        this.projectCreationTx = projectCreationTx;
-        this.seedifyuba = seedifyuba;
-        this.projectOwner = projectOwner;
-        this.projectReviewer = projectReviewer;
-        this.projectId = projectId;
+        ));
       });
       it("THEN an event is emited", async function () {
-        return expect(await this.projectCreationTx)
-          .to.emit(this.seedifyuba, "ProjectCreated")
-          .withArgs(this.projectId, this.projectOwner.address, this.projectReviewer.address, summedCost);
+        return expect(await projectCreationTx)
+          .to.emit(seedifyuba, "ProjectCreated")
+          .withArgs(projectId, projectOwner.address, projectReviewer.address, summedCost);
       });
 
       it(`THEN the project has a missing amount equal to the sum of the cost of the stages`, async function () {
-        return expect((await this.seedifyuba.projects(this.projectId)).missingAmount).to.equal(summedCost);
+        return expect((await seedifyuba.projects(projectId)).missingAmount).to.equal(summedCost);
       });
     });
   });
