@@ -20,7 +20,7 @@ describe("Seedifyuba - Complex funding", () => {
       let seedifyuba: Seedifyuba;
       let aFunder: SignerWithAddress;
       before(async function () {
-        ({ seedifyuba, aFunder, projectId }  = await loadFixture(fixtureProjectCreatedBuilder(stagesCost)));
+        ({ seedifyuba, aFunder, projectId } = await loadFixture(fixtureProjectCreatedBuilder(stagesCost)));
         seedifyubaFunder = seedifyuba.connect(aFunder);
         await seedifyubaFunder.fund(projectId, { value: amountToFund });
       });
