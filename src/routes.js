@@ -13,14 +13,14 @@ function getWalletDataRoute({ services, config }) {
   };
 }
 
-function getWalletsDataRoute({ services, config }) {
-  return {
-    method: "GET",
-    url: "/wallet",
-    schema: getWalletsData.schema(config),
-    handler: getWalletsData.handler({ config, ...services }),
-  };
-}
+// function getWalletsDataRoute({ services, config }) {
+//   return {
+//     method: "GET",
+//     url: "/wallet",
+//     schema: getWalletsData.schema(config),
+//     handler: getWalletsData.handler({ config, ...services }),
+//   };
+// }
 
 function createWalletRoute({ services, config }) {
   return {
@@ -49,4 +49,4 @@ function getProjectRoute({ services, config }) {
   };
 }
 
-module.exports = [getWalletDataRoute, getWalletsDataRoute, createWalletRoute, createProjectRoute, getProjectRoute];
+module.exports = [getWalletDataRoute, createWalletRoute, createProjectRoute, getProjectRoute];

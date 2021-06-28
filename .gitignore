@@ -14,6 +14,7 @@ profiles/
 docs/
 deployments/
 # files
+.env
 *.env
 *.log
 *.tsbuildinfo
