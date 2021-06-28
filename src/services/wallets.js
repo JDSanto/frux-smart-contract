@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-const accounts = [];
+var DbConnection = require("../services/db");
 
 const getDeployerWallet = ({ config }) => () => {
   const provider = new ethers.providers.InfuraProvider(config.network, config.infuraApiKey);
@@ -10,24 +10,16 @@ const createWallet = () => async () => {
   const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
   // This may break in some environments, keep an eye on it
   const wallet = ethers.Wallet.createRandom().connect(provider);
-  accounts.push({
-    address: wallet.address,
-    privateKey: wallet.privateKey,
-  });
-  const result = {
-    id: accounts.length,
-    address: wallet.address,
-    privateKey: wallet.privateKey,
-  };
+  result = DbConnection.insertUser(wallet.address, wallet.privateKey);
   return result;
 };
 
 const getWalletsData = () => () => {
-  return accounts;
+  return DbConnection.findUsers();
 };
 
-const getWalletData = () => index => {
-  return accounts[index - 1];
+const getWalletData = () => id => {
+  return DbConnection.findUser(id);
 };
 
 const getWallet = ({}) => index => {

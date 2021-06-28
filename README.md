@@ -20,14 +20,13 @@ To start the process, after you installed the dependencies and deployed the smar
 
 `npm start`
 
-keep in mind that you should have everything in config set before that.
+keep in mind that you should have everything in config set before that. Create an `.env` file, using the template `.env.example`.
 
 ### Available endpoints
 
 The following endpoints are available:
 
 - Create wallet: POST /wallet - No body 
-- Get wallets: GET /wallet
 - Get wallet: GET /wallet/:id:
 - Create project: POST /project - Body params: reviewerId(integer), ownerId(integer), stagesCost(array of numbers)
 - Get project: GET /project/:hash:
@@ -35,7 +34,7 @@ The following endpoints are available:
 ### Usage example
 
 ```sh
-$ http POST http://localhost:300/walllet
+$ http POST http://localhost:300/wallet
 HTTP/1.1 200 OK
 Connection: keep-alive
 Date: Fri, 16 Apr 2021 02:05:45 GMT
@@ -161,7 +160,7 @@ To deploy the smart contracts just run
 
 depending on the network you want to use.
 
-Keep in mind that you have to set the INFURA_API_KEY and MNEMONIC envvars(the .env file can be used for this).
+Keep in mind that you have to set the INFURA_API_KEY and MNEMONIC envvars (the .env file can be used for this).
 
 To get the deployed contract address just look in the `deployments/<network>/Seedifyuba.json` file.
 

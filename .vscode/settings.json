@@ -2,5 +2,12 @@
     "mocha.requires": [
         "ts-node/register/files"
     ],
-    "mocha.files.glob": "test/**/*.ts"
+    "mocha.files.glob": "test/**/*.ts",
+    "spellright.language": [
+        "Spanish"
+    ],
+    "spellright.documentTypes": [
+        "latex",
+        "plaintext"
+    ]
 }
