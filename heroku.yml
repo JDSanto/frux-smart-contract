@@ -1,6 +1,3 @@
 build:
   docker:
     web: heroku-Dockerfile
-
-release:
-  image: web
