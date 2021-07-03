@@ -7,8 +7,7 @@ var DbConnection = function () {
   async function DbConnect() {
     try {
       let url = process.env.DATABASE_URL;
-      console.log(url);
-      let _db = await MongoClient.connect(url);
+      let _db = await MongoClient.connect(url, { reconnectTries: 10, reconnectInterval: 2000 });
 
       return _db.db("frux-smart-contract");
     } catch (e) {
