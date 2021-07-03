@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+
+  frux_smart_contract_mongodb:
+    container_name: frux_smart_contract_mongodb
+    image: mongo:4.4.6
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb:/data/db
+
+  frux_smart_contract_api:
+    container_name: frux_smart_contract_api
+    depends_on:
+      - frux_smart_contract_mongodb
+    build:
+      context: ../
+      dockerfile: Dockerfile
+      args:
+        - MNEMONIC=${MNEMONIC}
+        - INFURA_API_KEY=${INFURA_API_KEY}
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=mongodb://root:password@frux_smart_contract_mongodb:27017
+      - MNEMONIC
+      - INFURA_API_KEY
+
+volumes:
+  mongodb:
