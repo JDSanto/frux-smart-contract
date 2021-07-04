@@ -1,5 +1,6 @@
 const BigNumber = require("bignumber.js");
 const ethers = require("ethers");
+var DbConnection = require("./db");
 
 const getContract = (config, wallet) => {
   return new ethers.Contract(config.contractAddress, config.contractAbi, wallet);
@@ -26,23 +27,23 @@ const createProject = ({ config }) => async (
     console.log(firstEvent);
     if (firstEvent && firstEvent.event == "ProjectCreated") {
       const projectId = firstEvent.args.projectId.toNumber();
-      console.log();
-      projects[tx.hash] = {
-        projectId,
-        stagesCost,
-        projectOwnerAddress,
-        projectReviewerAddress,
-      };
+      let project = DbConnection.insertProject(tx.hash, projectId, stagesCost, projectOwnerAddress, projectReviewerAddress);
     } else {
       console.error(`Project not created in tx ${tx.hash}`);
     }
   });
-  return tx;
+
+  return {
+    txHash: tx.hash, 
+    stagesCost,
+    projectOwnerAddress,
+    projectReviewerAddress
+  };
 };
 
-const getProject = () => async id => {
-  console.log(`Getting project ${id}: ${projects[id]}`);
-  return projects[id];
+const getProject = () => async txHash => {
+  console.log(`Getting project ${txHash}`);
+  return DbConnection.findProject(txHash);
 };
 
 module.exports = dependencies => ({

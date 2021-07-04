@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-var DbConnection = require("../services/db");
+var DbConnection = require("./db");
 
 const getDeployerWallet = ({ config }) => () => {
   const provider = new ethers.providers.InfuraProvider(config.network, config.infuraApiKey);

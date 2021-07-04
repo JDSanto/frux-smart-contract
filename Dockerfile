@@ -7,4 +7,4 @@ ENV MNEMONIC $MNEMONIC
 ARG INFURA_API_KEY
 ENV INFURA_API_KEY $INFURA_API_KEY
 COPY . .
-RUN npm run compile
+CMD ["npm", "run", "start"]
