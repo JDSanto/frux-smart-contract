@@ -4,10 +4,10 @@ function schema() {
       type: "object",
       properties: {
         ownerId: {
-          type: "integer",
+          type: "string",
         },
         reviewerId: {
-          type: "integer",
+          type: "string",
         },
         stagesCost: {
           type: "array",
@@ -21,12 +21,25 @@ function schema() {
 }
 
 function handler({ contractInteraction, walletService }) {
-  return async function (req) {
+  return async function (req, reply) {
+    ownerWallet = await walletService.getWalletData(req.body.ownerId);
+    reviewerWallet = await walletService.getWalletData(req.body.reviewerId);
+
+    if (!ownerWallet) {
+      reply.code(404).send({'error': 'Owner\'s wallet not found'});
+      return
+    }
+      
+    if (!reviewerWallet) {
+      reply.code(404).send({'error': 'Reviewer\'s wallets not found'});
+      return
+    }
+
     return contractInteraction.createProject(
       walletService.getDeployerWallet(),
       req.body.stagesCost,
-      walletService.getWalletData(req.body.ownerId).address,
-      walletService.getWalletData(req.body.reviewerId).address,
+      ownerWallet.address,
+      reviewerWallet.address,
     );
   };
 }

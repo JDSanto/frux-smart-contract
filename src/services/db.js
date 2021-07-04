@@ -35,8 +35,8 @@ var DbConnection = function () {
 
     let collection = _db.collection("users");
     let user = await collection.insertOne({
-      address: address,
-      privateKey: privateKey,
+      address,
+      privateKey,
     });
     user = user.ops[0];
     user.id = user._id;
@@ -56,10 +56,42 @@ var DbConnection = function () {
     return user;
   }
 
+  async function insertProject(txHash, id, stagesCost, ownerAddress, reviewerAddress) {
+    let _db = await Get();
+
+    let collection = _db.collection("projects");
+    let projects = await collection.insertOne({
+      _id: txHash,
+      projectId: id,
+      stagesCost,
+      ownerAddress,
+      reviewerAddress
+    });
+    projects = projects.ops[0];
+    projects.txHash = projects._id;
+    delete projects._id;
+    return projects;
+  }
+
+  async function findProject(txHash) {
+    let _db = await Get();
+
+    let collection = _db.collection("projects");
+    let project = await collection.findOne({_id: txHash});
+    if (project) {
+      project.txHash = project._id;
+      delete project._id;
+    }
+    return project;
+  }
+
+
   return {
-    Get: Get,
-    insertUser: insertUser,
-    findUser: findUser,
+    Get,
+    insertUser,
+    findUser,
+    insertProject,
+    findProject
   };
 };
 
