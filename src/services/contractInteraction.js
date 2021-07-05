@@ -11,34 +11,47 @@ const toWei = number => {
   return BigNumber(number).times(WEIS_IN_ETHER).toFixed();
 };
 
-const projects = {};
-
 const createProject = ({ config }) => async (
   deployerWallet,
   stagesCost,
   projectOwnerAddress,
   projectReviewerAddress,
 ) => {
-  const bookBnb = await getContract(config, deployerWallet);
-  const tx = await bookBnb.createProject(stagesCost.map(toWei), projectOwnerAddress, projectReviewerAddress);
+  const fruxSc = await getContract(config, deployerWallet);
+  const tx = await fruxSc.createProject(stagesCost.map(toWei), projectOwnerAddress, projectReviewerAddress);
   tx.wait(1).then(receipt => {
     console.log("Transaction mined");
     const firstEvent = receipt && receipt.events && receipt.events[0];
     console.log(firstEvent);
     if (firstEvent && firstEvent.event == "ProjectCreated") {
       const projectId = firstEvent.args.projectId.toNumber();
-      let project = DbConnection.insertProject(tx.hash, projectId, stagesCost, projectOwnerAddress, projectReviewerAddress);
+      let project = DbConnection.insertProject(
+        tx.hash,
+        projectId,
+        stagesCost,
+        projectOwnerAddress,
+        projectReviewerAddress,
+      );
     } else {
       console.error(`Project not created in tx ${tx.hash}`);
     }
   });
 
   return {
-    txHash: tx.hash, 
+    txHash: tx.hash,
     stagesCost,
     projectOwnerAddress,
-    projectReviewerAddress
+    projectReviewerAddress,
   };
+};
+
+const fundProject = ({ config }) => async (deployerWallet, projectId, amountToFund, funderData) => {
+  const fruxSc = await getContract(config, deployerWallet);
+  const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
+
+  const fruxScFounder = fruxSc.connect(new ethers.Wallet(funderData.privateKey, provider));
+  const tx = await fruxScFounder.fund(projectId, { value: toWei(amountToFund) });
+  return tx;
 };
 
 const getProject = () => async txHash => {
@@ -46,7 +59,19 @@ const getProject = () => async txHash => {
   return DbConnection.findProject(txHash);
 };
 
+const setCompletedStage = ({ config }) => async (deployerWallet, projectId, stageId, reviewerData) => {
+  const fruxSc = await getContract(config, deployerWallet);
+  const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
+
+  const fruxScReviewer = fruxSc.connect(new ethers.Wallet(reviewerData.privateKey, provider));
+  console.log(projectId, stageId);
+  const tx = await fruxScReviewer.setCompletedStage(projectId, stageId);
+  return tx;
+};
+
 module.exports = dependencies => ({
   createProject: createProject(dependencies),
   getProject: getProject(dependencies),
+  fundProject: fundProject(dependencies),
+  setCompletedStage: setCompletedStage(dependencies),
 });

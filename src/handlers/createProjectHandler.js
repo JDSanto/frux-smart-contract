@@ -26,13 +26,13 @@ function handler({ contractInteraction, walletService }) {
     reviewerWallet = await walletService.getWalletData(req.body.reviewerId);
 
     if (!ownerWallet) {
-      reply.code(404).send({'error': 'Owner\'s wallet not found'});
-      return
+      reply.code(404).send({ error: "Owner's wallet not found" });
+      return;
     }
-      
+
     if (!reviewerWallet) {
-      reply.code(404).send({'error': 'Reviewer\'s wallets not found'});
-      return
+      reply.code(404).send({ error: "Reviewer's wallets not found" });
+      return;
     }
 
     return contractInteraction.createProject(

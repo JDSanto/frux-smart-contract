@@ -65,7 +65,7 @@ var DbConnection = function () {
       projectId: id,
       stagesCost,
       ownerAddress,
-      reviewerAddress
+      reviewerAddress,
     });
     projects = projects.ops[0];
     projects.txHash = projects._id;
@@ -77,7 +77,7 @@ var DbConnection = function () {
     let _db = await Get();
 
     let collection = _db.collection("projects");
-    let project = await collection.findOne({_id: txHash});
+    let project = await collection.findOne({ _id: txHash });
     if (project) {
       project.txHash = project._id;
       delete project._id;
@@ -85,13 +85,12 @@ var DbConnection = function () {
     return project;
   }
 
-
   return {
     Get,
     insertUser,
     findUser,
     insertProject,
-    findProject
+    findProject,
   };
 };
 
