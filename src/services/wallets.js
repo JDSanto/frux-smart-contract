@@ -14,6 +14,7 @@ const createWallet = () => async () => {
   return result;
 };
 
+// Returns the data of the wallet
 const getWalletsData = () => () => {
   return DbConnection.findUsers();
 };
@@ -22,10 +23,12 @@ const getWalletData = () => id => {
   return DbConnection.findUser(id);
 };
 
-const getWallet = ({}) => index => {
+const getWallet = () => async id => {
   const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
+  let wallet = await getWalletData({})(id);
 
-  return new ethers.Wallet(accounts[index - 1].privateKey, provider);
+  // TODO: assert wallet not null
+  return new ethers.Wallet(wallet.privateKey, provider).connect(provider);
 };
 
 module.exports = ({ config }) => ({

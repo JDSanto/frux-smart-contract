@@ -3,6 +3,8 @@ const getWalletsData = require("./handlers/getWalletsHandler");
 const createWallet = require("./handlers/createWalletHandler");
 const createProject = require("./handlers/createProjectHandler");
 const getProject = require("./handlers/getProjectHandler");
+const fundProject = require("./handlers/fundProjectHandler");
+const completeStage = require("./handlers/completeStageHandler");
 
 function getWalletDataRoute({ services, config }) {
   return {
@@ -12,15 +14,6 @@ function getWalletDataRoute({ services, config }) {
     handler: getWalletData.handler({ config, ...services }),
   };
 }
-
-// function getWalletsDataRoute({ services, config }) {
-//   return {
-//     method: "GET",
-//     url: "/wallet",
-//     schema: getWalletsData.schema(config),
-//     handler: getWalletsData.handler({ config, ...services }),
-//   };
-// }
 
 function createWalletRoute({ services, config }) {
   return {
@@ -49,4 +42,29 @@ function getProjectRoute({ services, config }) {
   };
 }
 
-module.exports = [getWalletDataRoute, createWalletRoute, createProjectRoute, getProjectRoute];
+function fundProjectRoute({ services, config }) {
+  return {
+    method: "POST",
+    url: "/project/:id",
+    schema: fundProject.schema(config),
+    handler: fundProject.handler({ config, ...services }),
+  };
+}
+
+function completeStageRoute({ services, config }) {
+  return {
+    method: "POST",
+    url: "/project/:id/stage/:stageId",
+    schema: completeStage.schema(config),
+    handler: completeStage.handler({ config, ...services }),
+  };
+}
+
+module.exports = [
+  getWalletDataRoute,
+  createWalletRoute,
+  createProjectRoute,
+  getProjectRoute,
+  fundProjectRoute,
+  completeStageRoute,
+];
