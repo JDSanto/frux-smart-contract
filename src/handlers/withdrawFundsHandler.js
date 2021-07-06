@@ -33,7 +33,11 @@ function handler({ walletService, contractInteraction }) {
     }
 
     if (!req.body.fundsToWithdraw) {
-      body = await contractInteraction.withdrawAllFunds(walletService.getDeployerWallet(), projectData.projectId, funderData);
+      body = await contractInteraction.withdrawAllFunds(
+        walletService.getDeployerWallet(),
+        projectData.projectId,
+        funderData,
+      );
     } else {
       body = await contractInteraction.withdrawNFunds(
         walletService.getDeployerWallet(),
