@@ -5,6 +5,7 @@ const createProject = require("./handlers/createProjectHandler");
 const getProject = require("./handlers/getProjectHandler");
 const fundProject = require("./handlers/fundProjectHandler");
 const completeStage = require("./handlers/completeStageHandler");
+const withdrawFunds = require("./handlers/withdrawFundsHandler");
 
 function getWalletDataRoute({ services, config }) {
   return {
@@ -60,6 +61,15 @@ function completeStageRoute({ services, config }) {
   };
 }
 
+function withdrawFundsRoute({ services, config }) {
+  return {
+    method: "POST",
+    url: "/project/:id/withdraw",
+    schema: withdrawFunds.schema(config),
+    handler: withdrawFunds.handler({ config, ...services }),
+  };
+}
+
 module.exports = [
   getWalletDataRoute,
   createWalletRoute,
@@ -67,4 +77,5 @@ module.exports = [
   getProjectRoute,
   fundProjectRoute,
   completeStageRoute,
+  withdrawFundsRoute,
 ];

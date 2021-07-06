@@ -64,8 +64,25 @@ const setCompletedStage = ({ config }) => async (deployerWallet, projectId, stag
   const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
 
   const fruxScReviewer = fruxSc.connect(new ethers.Wallet(reviewerData.privateKey, provider));
-  console.log(projectId, stageId);
   const tx = await fruxScReviewer.setCompletedStage(projectId, stageId, { gasLimit: 6000000 });
+  return tx;
+};
+
+const withdrawAllFunds = ({ config }) => async (deployerWallet, projectId, funderData) => {
+  const fruxSc = await getContract(config, deployerWallet);
+  const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
+
+  const fruxScFounder = fruxSc.connect(new ethers.Wallet(funderData.privateKey, provider));
+  const tx = await fruxScFounder.withdrawAllFunds(projectId, { gasLimit: 6000000 });
+  return tx;
+};
+
+const withdrawNFunds = ({ config }) => async (deployerWallet, projectId, fundsToWithdraw, funderData) => {
+  const fruxSc = await getContract(config, deployerWallet);
+  const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
+
+  const fruxScFounder = fruxSc.connect(new ethers.Wallet(funderData.privateKey, provider));
+  const tx = await fruxScFounder.withdraw(projectId, toWei(fundsToWithdraw));
   return tx;
 };
 
@@ -74,4 +91,6 @@ module.exports = dependencies => ({
   getProject: getProject(dependencies),
   fundProject: fundProject(dependencies),
   setCompletedStage: setCompletedStage(dependencies),
+  withdrawAllFunds: withdrawAllFunds(dependencies),
+  withdrawNFunds: withdrawNFunds(dependencies),
 });
