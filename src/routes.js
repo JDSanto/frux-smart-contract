@@ -37,7 +37,7 @@ function createProjectRoute({ services, config }) {
 function getProjectRoute({ services, config }) {
   return {
     method: "GET",
-    url: "/project/:id",
+    url: "/project/:hash",
     schema: getProject.schema(config),
     handler: getProject.handler({ config, ...services }),
   };
@@ -46,7 +46,7 @@ function getProjectRoute({ services, config }) {
 function fundProjectRoute({ services, config }) {
   return {
     method: "POST",
-    url: "/project/:id",
+    url: "/project/:hash",
     schema: fundProject.schema(config),
     handler: fundProject.handler({ config, ...services }),
   };
@@ -55,7 +55,7 @@ function fundProjectRoute({ services, config }) {
 function completeStageRoute({ services, config }) {
   return {
     method: "POST",
-    url: "/project/:id/stage/:stageId",
+    url: "/project/:hash/stage/:stageId",
     schema: completeStage.schema(config),
     handler: completeStage.handler({ config, ...services }),
   };
@@ -64,7 +64,7 @@ function completeStageRoute({ services, config }) {
 function withdrawFundsRoute({ services, config }) {
   return {
     method: "POST",
-    url: "/project/:id/withdraw",
+    url: "/project/:hash/withdraw",
     schema: withdrawFunds.schema(config),
     handler: withdrawFunds.handler({ config, ...services }),
   };
