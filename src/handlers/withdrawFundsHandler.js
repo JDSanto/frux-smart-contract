@@ -21,16 +21,27 @@ function schema() {
 function handler({ walletService, contractInteraction }) {
   return async function (req, reply) {
     funderData = await walletService.getWalletData(req.body.funderId);
+    if (!funderData) {
+      reply.code(404).send({ error: "Funder's wallet not found" });
+      return;
+    }
 
-    if (!req.body.fundsToWithdraw)
-      body = await contractInteraction.withdrawAllFunds(walletService.getDeployerWallet(), req.params.id, funderData);
-    else
+    projectData = await contractInteraction.getProject(req.params.hash);
+    if (!projectData) {
+      reply.code(404).send({ error: "Project not found" });
+      return;
+    }
+
+    if (!req.body.fundsToWithdraw) {
+      body = await contractInteraction.withdrawAllFunds(walletService.getDeployerWallet(), projectData.projectId, funderData);
+    } else {
       body = await contractInteraction.withdrawNFunds(
         walletService.getDeployerWallet(),
-        req.params.id,
+        projectData.projectId,
         req.body.fundsToWithdraw,
         funderData,
       );
+    }
     return reply.code(200).send(body);
   };
 }

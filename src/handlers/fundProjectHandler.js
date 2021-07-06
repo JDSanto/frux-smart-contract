@@ -3,7 +3,7 @@ function schema() {
     params: {
       type: "object",
       properties: {
-        id: {
+        projectHash: {
           type: "string",
         },
         funderId: {
@@ -14,18 +14,28 @@ function schema() {
         },
       },
     },
-    required: ["funderId", "projectId", "amountToFund"],
+    required: ["funderId", "projectHash", "amountToFund"],
   };
 }
 
 function handler({ walletService, contractInteraction }) {
   return async function (req, reply) {
     funderData = await walletService.getWalletData(req.body.funderId);
+    if (!funderData) {
+      reply.code(404).send({ error: "Funder's wallet not found" });
+      return;
+    }
+
+    projectData = await contractInteraction.getProject(req.params.hash);
+    if (!projectData) {
+      reply.code(404).send({ error: "Project not found" });
+      return;
+    }
 
     // TODO assert funderData not null
     const body = await contractInteraction.fundProject(
       walletService.getDeployerWallet(),
-      req.params.id,
+      projectData.projectId,
       req.body.amountToFund,
       funderData,
     );
