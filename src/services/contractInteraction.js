@@ -65,7 +65,7 @@ const setCompletedStage = ({ config }) => async (deployerWallet, projectId, stag
 
   const fruxScReviewer = fruxSc.connect(new ethers.Wallet(reviewerData.privateKey, provider));
   console.log(projectId, stageId);
-  const tx = await fruxScReviewer.setCompletedStage(projectId, stageId);
+  const tx = await fruxScReviewer.setCompletedStage(projectId, stageId, { gasLimit: 6000000 });
   return tx;
 };
 
