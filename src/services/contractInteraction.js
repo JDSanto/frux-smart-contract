@@ -50,7 +50,7 @@ const fundProject = ({ config }) => async (deployerWallet, projectId, amountToFu
   const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
 
   const fruxScFounder = fruxSc.connect(new ethers.Wallet(funderData.privateKey, provider));
-  const tx = await fruxScFounder.fund(projectId, { value: toWei(amountToFund) });
+  const tx = await fruxScFounder.fund(projectId, { value: toWei(amountToFund), gasLimit: 6000000 });
   return tx;
 };
 
@@ -82,7 +82,7 @@ const withdrawNFunds = ({ config }) => async (deployerWallet, projectId, fundsTo
   const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
 
   const fruxScFounder = fruxSc.connect(new ethers.Wallet(funderData.privateKey, provider));
-  const tx = await fruxScFounder.withdraw(projectId, toWei(fundsToWithdraw));
+  const tx = await fruxScFounder.withdraw(projectId, toWei(fundsToWithdraw), { gasLimit: 6000000 });
   return tx;
 };
 
