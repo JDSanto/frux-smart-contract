@@ -1,0 +1,109 @@
+openapi: 3.0.1
+info:
+  title: Frux Smart Constract API
+  description: Specifications for frux smart contract API 2021
+  version: 1.0.0
+servers:
+- url: https://frux-smart-contract.herokuapp.com/
+tags:
+- name: project
+  description: Frux Smart Contract Project API
+- name: wallet
+  description: Frux User's wallet API
+paths:
+  /project:
+    post:
+      tags:
+        - project
+      summary: "Create project"
+      description: "Creates a smart contract for the new project with the given parameters"
+      operationId: "createProject"
+      requestBody: 
+        description: Project Object to be added
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/Project'
+        required: true
+      responses:
+        200: 
+          description: "Smart Contract was created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        400:
+          description: "Owner's wallet or Reviewer's wallet not found"
+          content: {}
+        500:
+          description: "Smart contract integration error"
+          content: {}
+  /project/{projectHash}:
+    post:
+      tags:
+        - project
+      summary: "Fund project"
+      description: "Allows a user to fund a project"
+      operationId: "fundProject"
+      requestBody: 
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/Fund'
+        required: true
+      parameters:
+      - name: projectHash
+        in: path 
+        description: Hash of the project 
+        required: true
+        schema:
+          type: string
+      responses:
+        200: 
+          description: "Smart Contract recieved the funds from the wallet"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        400:
+          description: "Funder's wallet not found"
+          content: {}
+        500:
+          description: "Smart contract integration error"
+          content: {}
+components:
+  schemas:
+    Project:
+      required:
+      - ownerId
+      - reviewerId
+      - stagesCost
+      properties:
+        ownerId:
+          type: string
+        reviewerId:
+          type: string
+        stagesCost:
+          type: array
+          items:
+            type: number
+    Fund:
+      required:
+      - funderId
+      - amountToFund
+      properties:
+        funderId:
+          type: string
+        amountToFund:
+          type: number
+    ProjectResponse:
+      properties:
+        hash:
+          type: string
+          format: int64
+        ownerId:
+          type: string
+        reviewerId:
+          type: string
+        stagesCost:
+          type: string
