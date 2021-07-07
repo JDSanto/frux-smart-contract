@@ -5,6 +5,15 @@ const routes = require("./routes");
 // Require the framework and instantiate it
 const fastify = require("fastify")({ logger: true });
 
+fastify.register(require("fastify-swagger"), {
+  mode: "static",
+  specification: {
+    path: "./swagger.yaml",
+  },
+  routePrefix: "/",
+  exposeRoute: true,
+});
+
 // Declares routes
 routes.forEach(route => fastify.route(route({ config, services })));
 
