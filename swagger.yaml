@@ -71,6 +71,144 @@ paths:
         500:
           description: "Smart contract integration error"
           content: {}
+    get:
+      tags:
+          - project
+      summary: "Get project"
+      description: "Get the Project"
+      operationId: "getProject"
+      parameters:
+      - name: projectHash
+        in: path 
+        description: Hash of the project 
+        required: true
+        schema:
+          type: string
+      responses:
+        200: 
+          description: "Smart Contract was created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        400:
+          description: "Owner's wallet or Reviewer's wallet not found"
+          content: {}
+        500:
+          description: "Smart contract integration error"
+          content: {}
+  /project/{projectHash}/stage/{stageId}:
+    post:
+      tags:
+        - project
+      summary: "Complete stage from project"
+      description: "Sets a stage(and all of the previous) as completed"
+      operationId: "completedStageProject"
+      requestBody: 
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/Stage'
+        required: true
+      parameters:
+      - name: projectHash
+        in: path 
+        description: Hash of the project 
+        required: true
+        schema:
+          type: string
+      - name: stageId
+        in: path 
+        description: A stage number that was not considered completed and smaller or equal to the last stage id
+        required: true
+        schema:
+          type: number
+      responses:
+        200: 
+          description: "Smart Contract recieved the funds from the wallet"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        400:
+          description: "Funder's wallet not found"
+          content: {}
+        500:
+          description: "Smart contract integration error"
+          content: {}
+  /project/{projectHash}/withdraw/:
+    post:
+      tags:
+        - project
+      summary: "Withdraws the funds sent"
+      description: "Withdraws the funds to the founder for a given project. If `fundToWithdraw`, then returns the amount of fund set in the variable, else full refund."
+      operationId: "withdrawProject"
+      requestBody: 
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/Withdraw'
+        required: true
+      parameters:
+      - name: projectHash
+        in: path 
+        description: Hash of the project 
+        required: true
+        schema:
+          type: string
+      responses:
+        200: 
+          description: "The funds were sent to the funder successfully"
+        400:
+          description: "Funder's wallet not found"
+          content: {}
+        500:
+          description: "Server Error - Cannot refund the amount of funds given"
+          content: {}
+  /wallet:
+    post:
+      tags:
+        - wallet
+      summary: "Create user's wallet"
+      description: "Creates a wallet for a user"
+      operationId: "createWallet"
+      responses:
+        200: 
+          description: "Wallet was successfully created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletResponse'
+        500:
+          description: "Server Error: Wallet was not created properly"
+          content: {}
+  /wallet/{id}:
+    get:
+      tags:
+          - wallet
+      summary: "Get wallet"
+      description: "Get the Owner's wallet"
+      operationId: "getWallet"
+      parameters:
+      - name: id
+        in: path 
+        description: Wallet's id
+        required: true
+        schema:
+          type: string
+      responses:
+        200: 
+          description: "Operation successful"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletResponse'
+        400:
+          description: "Owner's wallet or Reviewer's wallet not found"
+          content: {}
+        500:
+          description: "Server Error: Can't return the wallet"
+    
 components:
   schemas:
     Project:
@@ -87,15 +225,6 @@ components:
           type: array
           items:
             type: number
-    Fund:
-      required:
-      - funderId
-      - amountToFund
-      properties:
-        funderId:
-          type: string
-        amountToFund:
-          type: number
     ProjectResponse:
       properties:
         hash:
@@ -107,3 +236,33 @@ components:
           type: string
         stagesCost:
           type: string
+    Fund:
+      required:
+      - funderId
+      properties:
+        funderId:
+          type: string
+        amountToFund:
+          type: number
+    WalletResponse:
+      properties:
+        address:
+          type: string
+        privateKey:
+          type: string
+        id:
+          type: string
+    Stage:
+      required:
+      - reviewerId
+      properties:
+        reviewerId:
+          type: string
+    Withdraw:
+      required:
+      - funderId
+      properties:
+        funderId:
+          type: string
+        fundsToWithdraw:
+          type: number
