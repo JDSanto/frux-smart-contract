@@ -1,5 +1,5 @@
 const getWalletData = require("./handlers/getWalletHandler");
-const getWalletsData = require("./handlers/getWalletsHandler");
+const getWalletBalance = require("./handlers/getWalletBallanceHandler");
 const createWallet = require("./handlers/createWalletHandler");
 const createProject = require("./handlers/createProjectHandler");
 const getProject = require("./handlers/getProjectHandler");
@@ -70,6 +70,15 @@ function withdrawFundsRoute({ services, config }) {
   };
 }
 
+function getWalletBalanceRoute({ services, config }) {
+  return {
+    method: "GET",
+    url: "/wallet/:id/balance",
+    schema: getWalletBalance.schema(config),
+    handler: getWalletBalance.handler({ config, ...services }),
+  };
+}
+
 module.exports = [
   getWalletDataRoute,
   createWalletRoute,
@@ -78,4 +87,5 @@ module.exports = [
   fundProjectRoute,
   completeStageRoute,
   withdrawFundsRoute,
+  getWalletBalanceRoute,
 ];

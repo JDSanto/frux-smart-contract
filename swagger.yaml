@@ -136,7 +136,7 @@ paths:
         500:
           description: "Smart contract integration error"
           content: {}
-  /project/{projectHash}/withdraw/:
+  /project/{projectHash}/withdraw:
     post:
       tags:
         - project

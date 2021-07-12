@@ -1,6 +1,10 @@
 const ethers = require("ethers");
 var DbConnection = require("./db");
 
+const toEth = number => {
+  return number / Math.pow(10, 18);
+};
+
 const getDeployerWallet = ({ config }) => () => {
   const provider = new ethers.providers.InfuraProvider(config.network, config.infuraApiKey);
   return ethers.Wallet.fromMnemonic(config.deployerMnemonic).connect(provider);
@@ -23,6 +27,15 @@ const getWalletData = () => id => {
   return DbConnection.findUser(id);
 };
 
+const getWalletBallance = () => async wallet_info => {
+  const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
+
+  // TODO: assert wallet not null
+  let wallet = new ethers.Wallet(wallet_info.privateKey, provider).connect(provider);
+  let balance = await wallet.getBalance();
+  return { balance: toEth(balance) };
+};
+
 const getWallet = () => async id => {
   const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
   let wallet = await getWalletData({})(id);
@@ -37,4 +50,5 @@ module.exports = ({ config }) => ({
   getWalletsData: getWalletsData({ config }),
   getWalletData: getWalletData({ config }),
   getWallet: getWallet({ config }),
+  getWalletBallance: getWalletBallance({ config }),
 });
