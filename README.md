@@ -1,6 +1,6 @@
 # frux-smart-contract
 
-Smart contract and basic service to solve payments in the seedifyuba project.
+Smart contract and basic service to solve payments in Frux
 
 <img src="docs/logo.png" alt="Logo" width="500px">
 
