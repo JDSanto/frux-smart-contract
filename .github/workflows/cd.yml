@@ -26,9 +26,13 @@ jobs:
         run: >
           git config --global url."https://github.com/".insteadOf
           ssh://git@github.com/
-      - run: npm ci
-      - name: Deploy
+      - name: npm ci
+        run: npm ci
         env:
           INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
           MNEMONIC: ${{secrets.MNEMONIC}}
-        run: npm run deploy-kovan
+      # - name: Deploy
+      #   env:
+      #     INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
+      #     MNEMONIC: ${{secrets.MNEMONIC}}
+      #   run: npm run deploy-kovan
