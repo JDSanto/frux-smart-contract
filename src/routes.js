@@ -79,6 +79,21 @@ function getWalletBalanceRoute({ services, config }) {
   };
 }
 
+function getHealthRoute({ services, config }) {
+  return {
+    method: "GET",
+    url: "/health",
+    schema: {
+      type: "object",
+      properties: {
+        status: { type: "string" },
+      },
+      required: ["status"],
+    },
+    handler: () => ({ status: "ok" }),
+  };
+}
+
 module.exports = [
   getWalletDataRoute,
   createWalletRoute,
@@ -88,4 +103,5 @@ module.exports = [
   completeStageRoute,
   withdrawFundsRoute,
   getWalletBalanceRoute,
+  getHealthRoute,
 ];
