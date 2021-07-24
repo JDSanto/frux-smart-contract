@@ -29,12 +29,16 @@ jobs:
         run: >
           git config --global url."https://github.com/".insteadOf
           ssh://git@github.com/
-      - name: 
+      - name: npm ci
         run: npm ci
         env:
           INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
           MNEMONIC: ${{secrets.MNEMONIC}}
-      - run: npm run coverage
+      - name: npm run coverage
+        run: npm run coverage
+        env:
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
+          MNEMONIC: ${{secrets.MNEMONIC}}
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
