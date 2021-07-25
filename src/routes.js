@@ -55,7 +55,7 @@ function fundProjectRoute({ services, config }) {
 function completeStageRoute({ services, config }) {
   return {
     method: "POST",
-    url: "/project/:hash/stage/:stageId",
+    url: "/project/:hash/stageId/:stageId",
     schema: completeStage.schema(config),
     handler: completeStage.handler({ config, ...services }),
   };
