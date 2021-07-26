@@ -14,6 +14,11 @@ fastify.register(require("fastify-swagger"), {
   exposeRoute: true,
 });
 
+fastify.register(require("fastify-cors"), {
+  origin: "*",
+  methods: ["POST", "GET"],
+});
+
 // Declares routes
 routes.forEach(route => fastify.route(route({ config, services })));
 
