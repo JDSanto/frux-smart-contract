@@ -28,6 +28,7 @@ services:
       - DATABASE_URL=mongodb://root:password@frux_smart_contract_mongodb:27017
       - MNEMONIC
       - INFURA_API_KEY
+      - API_KEY
 
 volumes:
   mongodb:

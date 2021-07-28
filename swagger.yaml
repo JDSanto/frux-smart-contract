@@ -4,12 +4,14 @@ info:
   description: Specifications for frux smart contract API 2021
   version: 1.0.0
 servers:
-- url: https://frux-smart-contract.herokuapp.com/
+- url: http://localhost:3000/
 tags:
 - name: project
   description: Frux Smart Contract Project API
 - name: wallet
   description: Frux User's wallet API
+- name: health
+  description: Frux Smart Contract Health Endpoint
 paths:
   /project:
     post:
@@ -18,6 +20,8 @@ paths:
       summary: "Create project"
       description: "Creates a smart contract for the new project with the given parameters"
       operationId: "createProject"
+      security:
+        - ApiKeyAuth: []
       requestBody: 
         description: Project Object to be added
         content:
@@ -35,6 +39,8 @@ paths:
         400:
           description: "Owner's wallet or Reviewer's wallet not found"
           content: {}
+        403:
+          description: "Unauthorized request"
         500:
           description: "Smart contract integration error"
           content: {}
@@ -45,6 +51,8 @@ paths:
       summary: "Fund project"
       description: "Allows a user to fund a project"
       operationId: "fundProject"
+      security:
+        - ApiKeyAuth: []
       requestBody: 
         content:
           application/json: 
@@ -68,6 +76,8 @@ paths:
         400:
           description: "Funder's wallet not found"
           content: {}
+        403:
+          description: "Unauthorized request"
         500:
           description: "Smart contract integration error"
           content: {}
@@ -77,6 +87,8 @@ paths:
       summary: "Get project"
       description: "Get the Project"
       operationId: "getProject"
+      security:
+        - ApiKeyAuth: []
       parameters:
       - name: projectHash
         in: path 
@@ -94,6 +106,8 @@ paths:
         400:
           description: "Owner's wallet or Reviewer's wallet not found"
           content: {}
+        403:
+          description: "Unauthorized request"
         500:
           description: "Smart contract integration error"
           content: {}
@@ -104,6 +118,8 @@ paths:
       summary: "Complete stage from project"
       description: "Sets a stage(and all of the previous) as completed"
       operationId: "completedStageProject"
+      security:
+        - ApiKeyAuth: []
       requestBody: 
         content:
           application/json: 
@@ -133,6 +149,8 @@ paths:
         400:
           description: "Funder's wallet not found"
           content: {}
+        403:
+          description: "Unauthorized request"
         500:
           description: "Smart contract integration error"
           content: {}
@@ -143,6 +161,8 @@ paths:
       summary: "Withdraws the funds sent"
       description: "Withdraws the funds to the founder for a given project. If `fundToWithdraw`, then returns the amount of fund set in the variable, else full refund."
       operationId: "withdrawProject"
+      security:
+        - ApiKeyAuth: []
       requestBody: 
         content:
           application/json: 
@@ -162,6 +182,8 @@ paths:
         400:
           description: "Funder's wallet not found"
           content: {}
+        403:
+          description: "Unauthorized request"
         500:
           description: "Server Error - Cannot refund the amount of funds given"
           content: {}
@@ -172,6 +194,8 @@ paths:
       summary: "Create user's wallet"
       description: "Creates a wallet for a user"
       operationId: "createWallet"
+      security:
+        - ApiKeyAuth: []
       responses:
         200: 
           description: "Wallet was successfully created"
@@ -179,6 +203,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WalletResponse'
+        403:
+          description: "Unauthorized request"
         500:
           description: "Server Error: Wallet was not created properly"
           content: {}
@@ -189,6 +215,8 @@ paths:
       summary: "Get wallet"
       description: "Get the Owner's wallet"
       operationId: "getWallet"
+      security:
+        - ApiKeyAuth: []
       parameters:
       - name: id
         in: path 
@@ -206,10 +234,31 @@ paths:
         400:
           description: "Owner's wallet or Reviewer's wallet not found"
           content: {}
+        403:
+          description: "Unauthorized request"
         500:
           description: "Server Error: Can't return the wallet"
+  /health:
+    get:
+      tags:
+          - health
+      summary: "Status"
+      description: "Get the server status"
+      operationId: "health"
+      responses:
+        200: 
+          description: "Operation successful"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletResponse'
     
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   schemas:
     Project:
       required:
