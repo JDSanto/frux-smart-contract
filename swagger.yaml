@@ -4,7 +4,7 @@ info:
   description: Specifications for frux smart contract API 2021
   version: 1.0.0
 servers:
-- url: http://localhost:3000/
+- url: https://frux-smart-contract.herokuapp.com/
 tags:
 - name: project
   description: Frux Smart Contract Project API
