@@ -9,10 +9,10 @@ const withdrawFunds = require("./handlers/withdrawFundsHandler");
 
 const simpleAuth = config => async (request, reply, next) => {
   if (!("x-api-key" in request.headers)) {
-    reply.code(403).send({ error: "Missing x-api-key header" });
+    reply.code(401).send({ error: "Missing x-api-key header" });
   }
   if (request.headers["x-api-key"] !== config.apiKey) {
-    reply.code(403).send({ error: "Invalid x-api-key header" });
+    reply.code(401).send({ error: "Invalid x-api-key header" });
   }
 };
 

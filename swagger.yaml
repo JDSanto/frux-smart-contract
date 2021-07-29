@@ -39,7 +39,7 @@ paths:
         400:
           description: "Owner's wallet or Reviewer's wallet not found"
           content: {}
-        403:
+        401:
           description: "Unauthorized request"
         500:
           description: "Smart contract integration error"
@@ -76,7 +76,7 @@ paths:
         400:
           description: "Funder's wallet not found"
           content: {}
-        403:
+        401:
           description: "Unauthorized request"
         500:
           description: "Smart contract integration error"
@@ -106,7 +106,7 @@ paths:
         400:
           description: "Owner's wallet or Reviewer's wallet not found"
           content: {}
-        403:
+        401:
           description: "Unauthorized request"
         500:
           description: "Smart contract integration error"
@@ -149,7 +149,7 @@ paths:
         400:
           description: "Funder's wallet not found"
           content: {}
-        403:
+        401:
           description: "Unauthorized request"
         500:
           description: "Smart contract integration error"
@@ -182,7 +182,7 @@ paths:
         400:
           description: "Funder's wallet not found"
           content: {}
-        403:
+        401:
           description: "Unauthorized request"
         500:
           description: "Server Error - Cannot refund the amount of funds given"
@@ -203,7 +203,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WalletResponse'
-        403:
+        401:
           description: "Unauthorized request"
         500:
           description: "Server Error: Wallet was not created properly"
@@ -234,7 +234,7 @@ paths:
         400:
           description: "Owner's wallet or Reviewer's wallet not found"
           content: {}
-        403:
+        401:
           description: "Unauthorized request"
         500:
           description: "Server Error: Can't return the wallet"
